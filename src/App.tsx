@@ -1,3 +1,4 @@
+import React from 'react';
 import './App.css'
 import envCongfig from './environments/environment';
 import "rsuite/dist/rsuite.min.css";
