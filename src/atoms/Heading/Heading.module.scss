@@ -1,0 +1,19 @@
+@import "../../styles/weightMap";
+@import "../../styles/variables";
+@import "../.././styles/common";
+
+.heading {
+  line-height: normal;
+}
+
+@each $weight in $weights {
+  .weight-#{$weight} {
+    font-weight: weightMap($weight);
+  }
+}
+
+@each $color in $colors {
+  .color-#{$color} {
+    color: var(--#{$color});
+  }
+}

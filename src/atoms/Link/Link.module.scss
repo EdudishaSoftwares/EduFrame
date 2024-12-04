@@ -1,0 +1,35 @@
+@import "../../styles/weightMap";
+@import "../../styles/common";
+@import "../../styles/variables";
+
+.common-font-style {
+  font-family: inherit;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.noHoverUnderline {
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+@each $color in $colors {
+  .color-#{$color} {
+    color: var(--#{$color});
+  }
+
+  .hoverColor-#{$color} {
+    &:hover {
+      color: var(--#{$color});
+    }
+  }
+}
+
+@each $weight in $weights {
+  .weight-#{$weight} {
+    font-weight: weightMap($weight);
+  }
+}

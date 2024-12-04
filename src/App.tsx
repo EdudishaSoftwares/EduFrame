@@ -1,5 +1,6 @@
 import './App.css'
 import envCongfig from './environments/environment';
+import "rsuite/dist/rsuite.min.css";
 function App() {
   document.title = envCongfig.title;
 
