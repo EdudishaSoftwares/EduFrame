@@ -1,14 +1,25 @@
-import React from 'react';
-import './App.css'
-import envCongfig from './environments/environment';
-import "rsuite/dist/rsuite.min.css";
-function App() {
-  document.title = envCongfig.title;
+import { TRoutes } from "@/typings/common"
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+// Pages
+import LoginRoutes from "@/pages/Login";
 
+const getAllRoutes = (routes: TRoutes[]) => {
+  return routes.map((route) => (
+    <Route key={route.key} path={route.path} element={route.element}>
+      {route.children && getAllRoutes(route.children)}
+    </Route>
+  ));
+}
+
+function App() {
+  // All routes
+  const allRoutes: TRoutes[] = [
+    ...LoginRoutes(),
+  ];
   return (
-    <div>
-      <h1>Hello, Edusdisha Dev team we will be live soon</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>{getAllRoutes(allRoutes)}</Routes>
+    </BrowserRouter>
   )
 }
 
