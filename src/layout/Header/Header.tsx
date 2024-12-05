@@ -1,11 +1,18 @@
+import FlexboxGrid from "@/atoms/FlexboxGrid";
+import Text from "@/atoms/Text";
+import CurrentRouteContext from "@/contextProvider/CurrentRouteContext";
 import { TRoutes } from "@/typings/common";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Nav } from "rsuite";
+import React, { useContext } from "react";
+import { Route, useNavigate } from "react-router-dom";
+import { Message, Nav } from "rsuite";
 
-const Header = (props: { routes: TRoutes[]; selectedRoute: TRoutes }) => {
+const Header = () => {
   const navigate = useNavigate();
-  const { selectedRoute } = props;
+  const { currentRoute: selectedRoute } = useContext(CurrentRouteContext);
+
+  if (!selectedRoute) {
+    return <></>;
+  }
 
   const validAvailableTabs = React.useMemo(() => {
     const { handle } = selectedRoute;
@@ -23,9 +30,21 @@ const Header = (props: { routes: TRoutes[]; selectedRoute: TRoutes }) => {
     }, [selectedRoute, validAvailableTabs]) || [];
 
   React.useEffect(() => {
-    console.log("USE>>>>", validRoutesForNav)
+    console.log("USE>>>>", validRoutesForNav);
     navigate(validRoutesForNav?.[0]?.path);
   }, []);
+
+  // return (
+  //   <FlexboxGrid
+  //     direction="row"
+  //     align={"middle"}
+  //     className={"header"}
+  //     justify="space-between"
+  //   >
+  //     <Text >{selectedRoute.label}</Text>
+
+  //   </FlexboxGrid>
+  // );
 
   return (
     <Nav appearance="subtle" defaultActiveKey={validRoutesForNav?.[0]?.key}>
