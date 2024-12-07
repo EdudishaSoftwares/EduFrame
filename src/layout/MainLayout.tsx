@@ -13,13 +13,11 @@ const MainLayout = (props: {
   const { routes, childrens } = props;
 
   return (
-    <>
       <section style={{ paddingLeft: "60px" }}>
         <SideNav routes={routes} />
         <Header />
         <Body>{childrens}</Body>
       </section>
-    </>
   );
 };
 

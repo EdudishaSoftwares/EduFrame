@@ -66,8 +66,6 @@ function App() {
       return route.path === location.pathname;
     });
 
-    console.log("CR>>>>>", currentRoute?.path)
-
     return currentRoute || flatternRoutesTree[0];
   }, [allRoutes, location]);
 

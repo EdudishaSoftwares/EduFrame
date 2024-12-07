@@ -8,12 +8,12 @@ import { BrowserRouter } from "react-router-dom";
 // Style
 import "rsuite/dist/rsuite.min.css";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <CustomProvider theme='light'>
+    <CustomProvider theme="light">
       <BrowserRouter>
         <App />
       </BrowserRouter>
     </CustomProvider>
-  </StrictMode>,
-)
+  </StrictMode>
+);

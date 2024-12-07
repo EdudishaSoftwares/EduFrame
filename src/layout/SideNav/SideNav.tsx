@@ -6,11 +6,13 @@ import { TRoutes } from "@/typings/common";
 import { SideNavProps } from "./types";
 // Atoms
 import DropDown from "@/atoms/Icons/DropDown";
+import Text from "@/atoms/Text";
 // Context Provider
 import CurrentRouteContext from "@/contextProvider/CurrentRouteContext";
 // style
-import { FlexboxGrid, Text } from "rsuite";
+import { FlexboxGrid } from "rsuite";
 import "./SideNav.scss";
+import FlexboxGridComponent from "@/atoms/FlexboxGrid/FlexboxGrid";
 
 const SideNavV2 = (props: SideNavProps) => {
   const { routes } = props;
@@ -44,11 +46,7 @@ const SideNavV2 = (props: SideNavProps) => {
               // ${selectedRoute.key === route.key ? 'selected-menuitem' : ''
               // this code is work only for routes who does not have any child
               return (
-                <div
-                  className={`sidenav-iconholder ${
-                    selectedRoute.key === route.key ? "selected-menuitem" : ""
-                  }`}
-                >
+                <div className={`sidenav-iconholder`}>
                   <span>{route.icon}</span>
                 </div>
               );
@@ -83,12 +81,13 @@ const ExpandedSideNav = (props: { routes: TRoutes[] }) => {
   if (!selectedRoute) {
     return <></>;
   }
-  console.log("SELECTED ST>>>>>>> ", selectedRoute.key)
 
   const [selectedSubTab, setSelectedSubTab] = React.useState("");
 
   const selectedTabHandler = (route: TRoutes) => {
+    // Side Nav tab not have any child tab
     if (!route.children?.length) {
+      setSelectedSubTab(route.key);
       navigate(route.path);
     } else {
       if (selectedSubTab === route.key) {
@@ -108,9 +107,11 @@ const ExpandedSideNav = (props: { routes: TRoutes[] }) => {
     <div className="sidenav-item-container">
       {validRoutesForNav.map((route) => {
         return (
-          <div className="sidenav-item-container">
+          <div className={`sidenav-item-container`}>
             <FlexboxGrid
-              className="menuitem-holder"
+              className={`menuitem-holder ${
+                selectedSubTab === route.key && "selected-menuitem"
+              }`}
               align="middle"
               onClick={() => {
                 selectedTabHandler(route);
@@ -120,16 +121,21 @@ const ExpandedSideNav = (props: { routes: TRoutes[] }) => {
               <Text
                 size="lg"
                 className={
-                  selectedRoute.key === route.key ? "selected-menuitem" : ""
+                  selectedRoute.key === route.key
+                    ? "selected-menuitem-color"
+                    : ""
                 }
               >
                 {route.label}
               </Text>
-              {route.children?.length ? (
-                <DropDown rotate="bottom" fillPath="#686868" />
-              ) : (
-                <></>
-              )}
+              
+              <div className="dropdown-container">
+                {route.children?.length ? (
+                  <DropDown rotate={route.key === selectedSubTab ? `top` : `bottom`} fillPath="#686868" />
+                ) : (
+                  <></>
+                )}
+              </div>
             </FlexboxGrid>
 
             {route.children?.length && selectedSubTab === route.key ? (
@@ -140,25 +146,24 @@ const ExpandedSideNav = (props: { routes: TRoutes[] }) => {
                 {route.children.map((route, index) => {
                   return (
                     <Link to={route.path} key={`submenu-item-${index}`}>
-                      <FlexboxGrid
+                      <FlexboxGridComponent
                         as="div"
                         justify="space-between"
                         align="middle"
                       >
                         <Text
+                          size="lg"
                           className={
                             selectedRoute.key === route.key
-                              ? "selected-menuitem"
+                              ? "selected-menuitem-color"
                               : ""
                           }
                         >
                           {route.label}
                         </Text>
-                      </FlexboxGrid>
+                      </FlexboxGridComponent>
                     </Link>
                   );
-
-                  return <></>;
                 })}
               </div>
             ) : (

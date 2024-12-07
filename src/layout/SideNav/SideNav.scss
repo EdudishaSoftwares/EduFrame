@@ -19,7 +19,6 @@
 
         &:hover {
           cursor: pointer;
-          background-color: var(--lowlight-1);
         }
       }
 
@@ -29,13 +28,11 @@
 
         &:hover {
           cursor: pointer;
-          background-color: var(--lowlight-1);
         }
       }
 
       .submenuitem-holder {
-        
-        transition: all .5s ease-in;
+        transition: all .5s;
         overflow: hidden;
 
         >a {
@@ -56,11 +53,22 @@
       }
 
       .selected-menuitem {
+        border-left: solid 4px #4764cd;
+      }
+
+      .selected-menuitem-color {
         color: #4764cd;
       }
 
+      .temp {
+        border: 1px solid red;
+      }
     }
   } 
+
+  .dropdown-container {
+    margin-left: auto;
+  }
 }
 
 .sidenav-not-expanded {
