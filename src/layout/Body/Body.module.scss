@@ -1,0 +1,6 @@
+.content {
+  background-color: #d8d8da3a;
+  padding: 16px;
+  overflow: auto;
+  height: calc(100vh - 56px); // middle height is total height - header
+}

@@ -1,10 +1,19 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+// Main App
+import App from "@/App";
+// Modules
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { CustomProvider } from "rsuite";
+import { BrowserRouter } from "react-router-dom";
+// Style
+import "rsuite/dist/rsuite.min.css";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-      <App />
-  </StrictMode>,
-)
+    <CustomProvider theme="light">
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </CustomProvider>
+  </StrictMode>
+);
