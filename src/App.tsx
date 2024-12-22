@@ -10,6 +10,7 @@ import MainLayout from "@/layout";
 import CurrentRouteContext from "@/contextProvider/CurrentRouteContext";
 // Typings
 import { TRoutes } from "@/typings/common";
+import { useNavigate } from "react-router-dom";
 
 // Flatten the route tree into a 1D Array
 const flatternRoutes = (routes: TRoutes[]): TRoutes[] => {
@@ -45,37 +46,51 @@ function App() {
   const isUserLoggedIn = false; // Replace this with actual login state logic.
 
   const location = useLocation();
-
   // Login-only routes
   const loginRoutes: TRoutes[] = React.useMemo(() => [...LoginRoutes()], []);
 
   // Authenticated routes
-  const authRoutes: TRoutes[] = React.useMemo(() => [
-    ...SummaryRoutes(),
-    ...SettingRoutes(),
-  ], []);
+  const authRoutes: TRoutes[] = React.useMemo(
+    () => [...SummaryRoutes(), ...SettingRoutes()],
+    []
+  );
 
   // Flattened routes for both login and authenticated
-  const flatternLoginRoutes = React.useMemo(() => flatternRoutes(loginRoutes), [loginRoutes]);
-  const flatternAuthRoutes = React.useMemo(() => flatternRoutes(authRoutes), [authRoutes]);
+  const flatternLoginRoutes = React.useMemo(
+    () => flatternRoutes(loginRoutes),
+    [loginRoutes]
+  );
+  const flatternAuthRoutes = React.useMemo(
+    () => flatternRoutes(authRoutes),
+    [authRoutes]
+  );
 
   const getCurrentRoute = React.useMemo(() => {
     const allRoutes = [...flatternLoginRoutes, ...flatternAuthRoutes];
-    const currentRoute = allRoutes.find((route: TRoutes) => route.path === location.pathname);
+    const currentRoute = allRoutes.find(
+      (route: TRoutes) => route.path === location.pathname
+    );
 
     return currentRoute || flatternAuthRoutes[0]; // Default to the first authenticated route if not found.
   }, [flatternLoginRoutes, flatternAuthRoutes, location]);
 
   // Check if the current route is part of login routes
-  const isLoginRoute = flatternLoginRoutes.some((route) => route.path === location.pathname);
+  const isLoginRoute = flatternLoginRoutes.some(
+    (route) => route.path === location.pathname
+  );
 
-  // Redirect to /login if not logged in and not on a login route
-  if (!isUserLoggedIn && !isLoginRoute) {
-    return <Navigate to="/login" replace />;
-  }
+  console.log({
+    flatternLoginRoutes,
+    isLoginRoute,
+    isUserLoggedIn,
+    path: location.pathname,
+  });
 
   return (
     <>
+      {/* Redirect to /login if not logged in and not on a login route */}
+      {!isUserLoggedIn && !isLoginRoute && <Navigate to="/login" replace />}
+
       {isUserLoggedIn ? (
         // Render authenticated routes inside MainLayout
         <CurrentRouteContext.Provider value={{ currentRoute: getCurrentRoute }}>
