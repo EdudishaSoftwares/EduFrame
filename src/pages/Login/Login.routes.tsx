@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { TRoutes } from "@/typings/common";
 import Payment from "@/atoms/Icons/Payment";
+import Login from "@/molecules/login/Login";
 
 export const BASE_URL = "/login";
 
@@ -9,9 +10,7 @@ const getLoginRoutes = () => {
     {
       path: BASE_URL,
       element: (
-        <>
-          Login Page <Outlet />
-        </>
+        <Outlet />
       ),
       icon: <Payment />,
       showOnSideNav: true,
@@ -36,8 +35,8 @@ const getLoginRoutes = () => {
           },
         },
         {
-          path: `${BASE_URL}/signin`,
-          element: <>Signin</>,
+          path: `${BASE_URL}`,
+          element: <Login />,
           label: "Sign in",
           key: "signin",
           showOnTab: true,

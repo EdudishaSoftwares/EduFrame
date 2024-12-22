@@ -1,6 +1,5 @@
-// Modules
 import React from "react";
-import { Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 // Pages
 import LoginRoutes from "@/pages/Login";
 import SummaryRoutes from "@/pages/Summary";
@@ -12,21 +11,17 @@ import CurrentRouteContext from "@/contextProvider/CurrentRouteContext";
 // Typings
 import { TRoutes } from "@/typings/common";
 
-// Flat the route tree into 1D Array
+// Flatten the route tree into a 1D Array
 const flatternRoutes = (routes: TRoutes[]): TRoutes[] => {
   let flatRoutes: TRoutes[] = [];
 
-  for (let i = 0; i < routes.length; i++) {
-    const route = routes[i];
-
+  for (const route of routes) {
     if (route.children) {
       flatRoutes.push(route);
-      route.children = route.children.map((child) => {
-        return {
-          ...child,
-          parent: route,
-        };
-      });
+      route.children = route.children.map((child) => ({
+        ...child,
+        parent: route,
+      }));
       flatRoutes = [...flatRoutes, ...flatternRoutes(route.children)];
     } else {
       flatRoutes.push(route);
@@ -46,41 +41,59 @@ const getAllRoutes = (routes: TRoutes[]) => {
 };
 
 function App() {
+  // Simulated user login state
+  const isUserLoggedIn = false; // Replace this with actual login state logic.
+
   const location = useLocation();
 
-  // All routes
-  // Spread your routes hear...
-  const allRoutes: TRoutes[] = [
+  // Login-only routes
+  const loginRoutes: TRoutes[] = React.useMemo(() => [...LoginRoutes()], []);
+
+  // Authenticated routes
+  const authRoutes: TRoutes[] = React.useMemo(() => [
     ...SummaryRoutes(),
-    ...LoginRoutes(),
     ...SettingRoutes(),
-  ];
+  ], []);
 
-  const flatternRoutesTree = React.useMemo(() => {
-    return flatternRoutes(allRoutes);
-  }, [allRoutes]);
+  // Flattened routes for both login and authenticated
+  const flatternLoginRoutes = React.useMemo(() => flatternRoutes(loginRoutes), [loginRoutes]);
+  const flatternAuthRoutes = React.useMemo(() => flatternRoutes(authRoutes), [authRoutes]);
 
-  // Get current route accourding to browser location
   const getCurrentRoute = React.useMemo(() => {
-    const currentRoute = flatternRoutesTree.find((route: TRoutes) => {
-      return route.path === location.pathname;
-    });
+    const allRoutes = [...flatternLoginRoutes, ...flatternAuthRoutes];
+    const currentRoute = allRoutes.find((route: TRoutes) => route.path === location.pathname);
 
-    return currentRoute || flatternRoutesTree[0];
-  }, [allRoutes, location]);
+    return currentRoute || flatternAuthRoutes[0]; // Default to the first authenticated route if not found.
+  }, [flatternLoginRoutes, flatternAuthRoutes, location]);
+
+  // Check if the current route is part of login routes
+  const isLoginRoute = flatternLoginRoutes.some((route) => route.path === location.pathname);
+
+  // Redirect to /login if not logged in and not on a login route
+  if (!isUserLoggedIn && !isLoginRoute) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
-    <CurrentRouteContext.Provider value={{ currentRoute: getCurrentRoute }}>
-      <MainLayout
-        routes={allRoutes}
-        childrens={
-          <>
-            <Outlet />
-            <Routes>{getAllRoutes(allRoutes)}</Routes>
-          </>
-        }
-      />
-    </CurrentRouteContext.Provider>
+    <>
+      {isUserLoggedIn ? (
+        // Render authenticated routes inside MainLayout
+        <CurrentRouteContext.Provider value={{ currentRoute: getCurrentRoute }}>
+          <MainLayout
+            routes={authRoutes}
+            childrens={
+              <>
+                <Outlet />
+                <Routes>{getAllRoutes(authRoutes)}</Routes>
+              </>
+            }
+          />
+        </CurrentRouteContext.Provider>
+      ) : (
+        // Render login-only routes without MainLayout
+        <Routes>{getAllRoutes(loginRoutes)}</Routes>
+      )}
+    </>
   );
 }
 
